@@ -36,17 +36,24 @@
                           return h('div.cooked', {innerHTML: category.description});
                       }
                   }
-                  
+
                   function logoImg() {
-                     if(settings.show_category_logo && category.uploaded_logo){
-                        return [h('img',{"attributes" : {"src" : category.uploaded_logo.url}})];
-                     } else if (settings.show_category_logo && settings.show_parent_category_logo && category.parentCategory && category.parentCategory.uploaded_logo) {
-                        return [h('img',{"attributes" : {"src" : category.parentCategory.uploaded_logo.url}})];                        
-                     } else if (settings.show_site_logo && siteSettings.logo_small) {
+                      const parentCategory = category.parentCategory;
+                      const grandParentCategory = parentCategory && parentCategory.parentCategory;
+  
+                      if(settings.show_category_logo) {
+                        if (category.uploaded_logo) {
+                          return [h('img',{"attributes" : {"src" : category.uploaded_logo.url}})];
+                        } else if (settings.show_parent_category_logo && parentCategory && parentCategory.uploaded_logo) {
+                          return [h('img',{"attributes" : {"src" : parentCategory.uploaded_logo.url}})];
+                        } else if (settings.show_parent_category_logo && grandParentCategory && grandParentCategory.uploaded_logo) {
+                          return [h('img',{"attributes" : {"src" : grandParentCategory.uploaded_logo.url}})];
+                        }
+                      } else if (settings.show_site_logo && siteSettings.logo_small) {
                         return [h('img',{"attributes" : {"src" : siteSettings.logo_small}})];
-                     }
+                      }
                   }
-                  
+
                   function ifParentProtected() {
                       if(category.parentCategory && category.parentCategory.read_restricted) {
                           return lockIcon;
